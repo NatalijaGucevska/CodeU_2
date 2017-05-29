@@ -27,10 +27,10 @@ public class BinaryTree<T> {
 		}
 		return false;
 	}
-	
+
 	public void printAncestors(T val) {
-		ArrayList<Node<T>> ancestors = findAncestors(val); 
-		for(Node<T> a: ancestors) {
+		ArrayList<Node<T>> ancestors = findAncestors(val);
+		for (Node<T> a : ancestors) {
 			System.out.print(a.getVal() + " ");
 		}
 	}
@@ -65,6 +65,27 @@ public class BinaryTree<T> {
 			}
 		}
 		return null;
+	}
+
+	public Node<T> findLowestCommonAncestor(T first, T second) {
+		ArrayList<Node<T>> ancestors1 = findAncestors(first);
+		ArrayList<Node<T>> ancestors2 = findAncestors(second);
+
+		int l1 = ancestors1.size();
+		int l2 = ancestors2.size();
+		if (l1 == 0 || l2 == 0) {
+			return null;
+		}
+		int l = Math.min(l1, l2);
+
+		for (int i = 1; i <= l; i++) {
+			if (!ancestors1.get(l1 - i).equals(ancestors2.get(l2 - i))) {
+				return ancestors1.get(l1 - i + 1);
+			}
+		}
+
+		return ancestors1.get(l1 - l);
+
 	}
 
 }
