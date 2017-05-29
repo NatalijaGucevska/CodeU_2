@@ -9,7 +9,7 @@ public class BinaryTree<T> {
 
 	public boolean add(T current, T newNode, boolean addToLeft) {
 		Node currentNode;
-		if (current == root.getVal()) {
+		if (current.equals(root.getVal())) {
 			currentNode = root;
 		} else {
 			currentNode = findNode(root.left, root.right, current);
