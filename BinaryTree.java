@@ -34,6 +34,16 @@ public class BinaryTree<T> {
 		return false;
 	}
 
+	/**
+	 * Provides a string containing the ancestors of a specific node. If the
+	 * required node is not in the tree or it is the root node, the returned
+	 * string contains message explaining that the node doesn't have ancestors
+	 * in the tree.
+	 * 
+	 * @param val
+	 *            - The node for which the ancestors are required
+	 * @return - A string containing the ancestors of the node
+	 */
 	public String printAncestors(T val) {
 		ArrayList<Node> ancestors = findAncestors(val);
 		StringBuilder str = new StringBuilder();
@@ -41,18 +51,22 @@ public class BinaryTree<T> {
 		if (ancestors.size() == 0) {
 			return "This node doesn't have ancestors in the tree";
 		}
-
 		for (Node a : ancestors) {
-			str.append(a.getVal());
+			str.append(a.getVal().toString());
 			str.append(" ");
 		}
 
 		return str.toString();
 	}
 
+	/**
+	 * Provides a list that contains the ancestors of a specific node If the
+	 * node doesn't have ancestors in the tree, the returned list is empty.
+	 */
 	private ArrayList<Node> findAncestors(T val) {
 		Node node = findNode(root.getLeft(), root.getRight(), val);
 		ArrayList<Node> ancestors = new ArrayList<>();
+
 		while (node != null && node.getParent() != null) {
 			node = node.getParent();
 			ancestors.add(node);
@@ -60,6 +74,10 @@ public class BinaryTree<T> {
 		return ancestors;
 	}
 
+	/**
+	 * Given the value of a node, it finds the specific node in the tree. If
+	 * there is no node for the requested value, the returned value is null
+	 */
 	private Node findNode(Node left, Node right, T val) {
 		if (left != null) {
 			if (left.getVal().equals(val)) {
@@ -82,6 +100,11 @@ public class BinaryTree<T> {
 		return null;
 	}
 
+	/**
+	 * For two values of the tree, it finds the lowest common ancestor. If one
+	 * of the values doesn't have ancestors in the tree (i.e. it is a root or
+	 * value that doesn't belong to the tree) the returned value is null.
+	 */
 	public T findLowestCommonAncestor(T first, T second) {
 		ArrayList<Node> ancestors1 = findAncestors(first);
 		ArrayList<Node> ancestors2 = findAncestors(second);
