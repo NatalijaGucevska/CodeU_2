@@ -8,7 +8,12 @@ public class BinaryTree<T> {
 	}
 
 	public boolean add(T current, T newNode, boolean addToLeft) {
-		Node currentNode = findNode(root.left, root.right, current);
+		Node currentNode;
+		if (current == root.getVal()) {
+			currentNode = root;
+		} else {
+			currentNode = findNode(root.left, root.right, current);
+		}
 		if (current != null) {
 			Node nodeToAdd = new Node(newNode);
 			nodeToAdd.setParent(currentNode);
@@ -29,11 +34,20 @@ public class BinaryTree<T> {
 		return false;
 	}
 
-	public void printAncestors(T val) {
+	public String printAncestors(T val) {
 		ArrayList<Node> ancestors = findAncestors(val);
-		for (Node a : ancestors) {
-			System.out.print(a.getVal() + " ");
+		StringBuilder str = new StringBuilder();
+
+		if (ancestors.size() == 0) {
+			return "This node doesn't have ancestors in the tree";
 		}
+
+		for (Node a : ancestors) {
+			str.append(a.getVal());
+			str.append(" ");
+		}
+
+		return str.toString();
 	}
 
 	private ArrayList<Node> findAncestors(T val) {
@@ -75,11 +89,11 @@ public class BinaryTree<T> {
 		int l1 = ancestors1.size();
 		int l2 = ancestors2.size();
 		int l = Math.min(l1, l2);
-		
+
 		if (l1 == 0 || l2 == 0) {
 			return null;
 		}
-	
+
 		for (int i = 1; i <= l; i++) {
 			if (!ancestors1.get(l1 - i).equals(ancestors2.get(l2 - i))) {
 				return ancestors1.get(l1 - i + 1).getVal();
