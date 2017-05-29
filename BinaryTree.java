@@ -1,27 +1,28 @@
 import java.util.ArrayList;
 
 public class BinaryTree<T> {
-	Node<T> root;
+	Node root;
 
-	public BinaryTree(Node<T> root) {
-		this.root = root;
+	public BinaryTree(T root) {
+		this.root = new Node(root);
 	}
 
-	public boolean add(Node<T> current, Node<T> left, Node<T> right) {
+	public boolean add(T current, T newNode, boolean addToLeft) {
+		Node currentNode = findNode(root.left, root.right, current);
 		if (current != null) {
-			current.setLeft(left);
-			current.setRight(right);
-			if (left != null) {
-				if (left.getParent() != null) {
+			Node nodeToAdd = new Node(newNode);
+			nodeToAdd.setParent(currentNode);
+
+			if (addToLeft) {
+				if (currentNode.getLeft() != null) {
 					return false;
 				}
-				left.setParent(current);
-			}
-			if (right != null) {
-				if (right.getParent() != null) {
+				currentNode.setLeft(nodeToAdd);
+			} else {
+				if (currentNode.getRight() != null) {
 					return false;
 				}
-				right.setParent(current);
+				currentNode.setRight(nodeToAdd);
 			}
 			return true;
 		}
@@ -29,15 +30,15 @@ public class BinaryTree<T> {
 	}
 
 	public void printAncestors(T val) {
-		ArrayList<Node<T>> ancestors = findAncestors(val);
-		for (Node<T> a : ancestors) {
+		ArrayList<Node> ancestors = findAncestors(val);
+		for (Node a : ancestors) {
 			System.out.print(a.getVal() + " ");
 		}
 	}
 
-	private ArrayList<Node<T>> findAncestors(T val) {
-		Node<T> node = findNode(root.getLeft(), root.getRight(), val);
-		ArrayList<Node<T>> ancestors = new ArrayList<>();
+	private ArrayList<Node> findAncestors(T val) {
+		Node node = findNode(root.getLeft(), root.getRight(), val);
+		ArrayList<Node> ancestors = new ArrayList<>();
 		while (node != null && node.getParent() != null) {
 			node = node.getParent();
 			ancestors.add(node);
@@ -45,12 +46,12 @@ public class BinaryTree<T> {
 		return ancestors;
 	}
 
-	private Node<T> findNode(Node<T> left, Node<T> right, T val) {
+	private Node findNode(Node left, Node right, T val) {
 		if (left != null) {
 			if (left.getVal().equals(val)) {
 				return left;
 			} else {
-				Node<T> l = findNode(left.getLeft(), left.getRight(), val);
+				Node l = findNode(left.getLeft(), left.getRight(), val);
 				if (l != null)
 					return l;
 			}
@@ -59,7 +60,7 @@ public class BinaryTree<T> {
 			if (right.getVal().equals(val)) {
 				return right;
 			} else {
-				Node<T> r = findNode(right.getLeft(), right.getRight(), val);
+				Node r = findNode(right.getLeft(), right.getRight(), val);
 				if (r != null)
 					return r;
 			}
@@ -67,24 +68,66 @@ public class BinaryTree<T> {
 		return null;
 	}
 
-	public Node<T> findLowestCommonAncestor(T first, T second) {
-		ArrayList<Node<T>> ancestors1 = findAncestors(first);
-		ArrayList<Node<T>> ancestors2 = findAncestors(second);
+	public T findLowestCommonAncestor(T first, T second) {
+		ArrayList<Node> ancestors1 = findAncestors(first);
+		ArrayList<Node> ancestors2 = findAncestors(second);
 
 		int l1 = ancestors1.size();
 		int l2 = ancestors2.size();
+		int l = Math.min(l1, l2);
+		
 		if (l1 == 0 || l2 == 0) {
 			return null;
 		}
-		int l = Math.min(l1, l2);
-
+	
 		for (int i = 1; i <= l; i++) {
 			if (!ancestors1.get(l1 - i).equals(ancestors2.get(l2 - i))) {
-				return ancestors1.get(l1 - i + 1);
+				return ancestors1.get(l1 - i + 1).getVal();
 			}
 		}
+		return ancestors1.get(l1 - l).getVal();
+	}
 
-		return ancestors1.get(l1 - l);
+	private class Node {
+		Node left;
+		Node right;
+		Node parent;
+		T val;
+
+		Node(T val) {
+			this.val = val;
+			this.left = null;
+			this.right = null;
+			this.parent = null;
+		}
+
+		void setParent(Node parent) {
+			this.parent = parent;
+		}
+
+		void setLeft(Node left) {
+			this.left = left;
+		}
+
+		void setRight(Node right) {
+			this.right = right;
+		}
+
+		Node getParent() {
+			return this.parent;
+		}
+
+		Node getLeft() {
+			return this.left;
+		}
+
+		Node getRight() {
+			return this.right;
+		}
+
+		T getVal() {
+			return this.val;
+		}
 
 	}
 
